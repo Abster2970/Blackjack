@@ -71,7 +71,7 @@ namespace Blackjack
                 foreach(var player in players)
                 {
                     Console.WriteLine();
-                    if ((player.Total <= 21 && player.Total > dealer.Total) || dealer.Total > 21)
+                    if ((player.Total <= 21 && player.Total > dealer.Total) || (dealer.Total > 21 && player.Total <= 21))
                     {
                         (player as Player).GetPrize();
                         Console.WriteLine($"#{player.Name} - WON");
