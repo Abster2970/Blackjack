@@ -4,12 +4,9 @@ using System.Text;
 
 namespace Blackjack
 {
-    class Player
+    class Player : Participant
     {
-        public string Name { get; set; }
-        public List<Card> Cards { get; set; }
         private Dealer CurrentDealer { get; }
-        public int Total { get; set; } = 0;
 
         private int cash;
         private int betValue;
@@ -26,7 +23,8 @@ namespace Blackjack
             private set { betValue = value > 0 ? value : 0; }
         }
 
-        public Player(string name, Dealer currentDealer)
+        public Player(string name, Dealer currentDealer) 
+            : base(name)
         {
             Cash = 1000;
             BetValue = 0;
@@ -40,8 +38,6 @@ namespace Blackjack
         {
             Cards.Add(newCard);
             Total += newCard.GetValue(Total);
-
-            //Console.WriteLine($"#{Name} gets {newCard.ToString()}");
         }
         
         public void Hit()
@@ -58,15 +54,6 @@ namespace Blackjack
         public void GetPrize()
         {
             Cash += BetValue * 2;
-        }
-
-        public void PrintCards()
-        {
-            Console.WriteLine($"\n#{Name} cards: ");
-            foreach(var card in Cards)
-            {
-                Console.WriteLine(card.ToString());
-            }
         }
 
         public Card GetLastCard()

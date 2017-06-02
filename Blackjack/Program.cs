@@ -7,37 +7,37 @@ namespace Blackjack
     {
         static void Main(string[] args)
         {
-            Dealer dealer = new Dealer();
-            List<Player> players = new List<Player>(){
-                { new Player("1", dealer) },
-                { new Player("2", dealer) },
-                { new Player("3", dealer) }
+            Participant dealer = new Dealer("Dealer");
+            List<Participant> players = new List<Participant>(){
+                { new Player("1", dealer as Dealer) },
+                { new Player("2", dealer as Dealer) },
+                { new Player("3", dealer as Dealer) }
             };
 
             for (;;)
             {
                 Console.WriteLine("=================================================");
-                dealer.GetCard();
-                dealer.GetCard();
+                (dealer as Dealer).GetCard();
+                (dealer as Dealer).GetCard();
 
                 Console.WriteLine($"Visible dealer's card: {dealer.Cards[0].ToString()}");
                 foreach (var player in players)
                 {
-                    int initialCash = player.Cash;
+                    int initialCash = (player as Player).Cash;
 
                     Console.WriteLine();
-                    Console.WriteLine($"#{player.Name} - Cash:{player.Cash}");
+                    Console.WriteLine($"#{player.Name} - Cash:{(player as Player).Cash}");
                     Console.WriteLine($"#{player.Name} Type a bet you wish: ");
 
                     int betValue = int.Parse(Console.ReadLine());
-                    player.DoBet(betValue);
-                    
-                    player.Hit();
-                    player.Hit();
+                    (player as Player).DoBet(betValue);
+
+                    (player as Player).Hit();
+                    (player as Player).Hit();
                     player.PrintCards();
 
                     Console.WriteLine();
-                    Console.WriteLine($"#{player.Name} - Cash:{player.Cash}");
+                    Console.WriteLine($"#{player.Name} - Cash:{(player as Player).Cash}");
                     char action;
                     do
                     {
@@ -49,8 +49,8 @@ namespace Blackjack
                         Console.WriteLine();
                         if (action == 'h')
                         {
-                            player.Hit();
-                            Console.WriteLine($"#{player.Name} gets {player.GetLastCard().ToString()}");
+                            (player as Player).Hit();
+                            Console.WriteLine($"#{player.Name} gets {(player as Player).GetLastCard().ToString()}");
                         }
                     } while (action == 'h' && player.Total <= 21);
 
@@ -61,7 +61,7 @@ namespace Blackjack
 
                 while (dealer.Total <= 17)
                 {
-                    dealer.GetCard();
+                    (dealer as Dealer).GetCard();
                 }
 
                 dealer.PrintCards();
@@ -73,39 +73,19 @@ namespace Blackjack
                     Console.WriteLine();
                     if ((player.Total <= 21 && player.Total > dealer.Total) || dealer.Total > 21)
                     {
-                        player.GetPrize();
+                        (player as Player).GetPrize();
                         Console.WriteLine($"#{player.Name} - WON");
                     }
                     else
                     {
                         Console.WriteLine($"#{player.Name} - LOST");
                     }
-                    //int finalCash = player.Cash;
-                    //string diff = GetDiff(initialCash, finalCash);
+
                     Console.WriteLine($"#{player.Name} - Total:{player.Total}");
-                    Console.WriteLine($"#{player.Name} - Cash:{player.Cash}");
+                    Console.WriteLine($"#{player.Name} - Cash:{(player as Player).Cash}");
                 }
-                dealer.Reset();
+                (dealer as Dealer).Reset();
             }
         }
-
-
-        //static private string GetDiff(int initialCash, int finalCash)
-        //{
-        //    string result = "";
-        //    if (finalCash == initialCash)
-        //    {
-        //        result = "+0";
-        //    }
-        //    else if (finalCash > initialCash)
-        //    {
-        //        result = "+" + (finalCash - initialCash);
-        //    }
-        //    else
-        //    {
-        //        result = "" + (finalCash - initialCash);
-        //    }
-        //    return result;
-        //}
     }
 }

@@ -3,17 +3,15 @@ using System.Collections.Generic;
 
 namespace Blackjack
 {
-    class Dealer
+    class Dealer : Participant
     {
-        public List<Card> Cards { get; private set; }
         public List<Card> Deck { get; private set; }
         public List<Player> Players { get; set; }
-        public int Total { get; set; } = 0;
-        public string Name { get; set; } = "Dealer";
-        public Dealer()
+
+        public Dealer(string name)
+             : base(name)
         {
             Players = new List<Player>();
-            Cards = new List<Card>();
             FillDeck();
         }
 
@@ -55,23 +53,7 @@ namespace Blackjack
             Deck.RemoveAt(randomCardId);
 
             Total += randomCard.GetValue(Total);
-            //int cardsValue = GetCardsValue();
-            //if (cardsValue > 17) CountTheResult();
         }
-
-        //public void CountTheResult()
-        //{
-        //    foreach(var player in Players)
-        //    {
-        //        int playerCardsValue = player.Total;
-        //        int dealerCardsValue = Total;
-
-        //        if ((playerCardsValue > dealerCardsValue && playerCardsValue <= 21) || dealerCardsValue > 21)
-        //        {
-        //            player.GetPrize();
-        //        }
-        //    }
-        //}
 
         public void Reset()
         {
@@ -83,15 +65,6 @@ namespace Blackjack
             {
                 player.Total = 0;
                 player.Cards.Clear();
-            }
-        }
-
-        public void PrintCards()
-        {
-            Console.WriteLine($"\n#{Name} cards: ");
-            foreach (var card in Cards)
-            {
-                Console.WriteLine(card.ToString());
             }
         }
     }
