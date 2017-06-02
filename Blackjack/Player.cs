@@ -4,78 +4,74 @@ using System.Text;
 
 namespace Blackjack
 {
-    enum PlayerState
-    {
-        Playing,
-        Waiting
-    }
-
     class Player
     {
         public string Name { get; set; }
         public List<Card> Cards { get; set; }
         private Dealer CurrentDealer { get; }
-        public PlayerState State { get; set; } = PlayerState.Playing;
+        public int Total { get; set; } = 0;
 
-        public int InitialAmountOfMoney
+        private int cash;
+        private int betValue;
+
+        public int Cash
         {
-            get { return InitialAmountOfMoney; }
-            private set { InitialAmountOfMoney = value > 0 ? value : 0; }
+            get { return cash; }
+            private set { cash = value > 0 ? value : 0; }
         }
 
         public int BetValue
         {
-            get { return BetValue; }
-            private set { BetValue = value > 0 ? value : 0; }
+            get { return betValue; }
+            private set { betValue = value > 0 ? value : 0; }
         }
 
-        public Player(Dealer currentDealer)
+        public Player(string name, Dealer currentDealer)
         {
-            InitialAmountOfMoney = 1000;
+            Cash = 1000;
             BetValue = 0;
             Cards = new List<Card>();
+            Name = name;
             CurrentDealer = currentDealer;
+            currentDealer.Players.Add(this);
         }
 
         public void AddCard(Card newCard)
         {
             Cards.Add(newCard);
-        }
+            Total += newCard.GetValue(Total);
 
+            //Console.WriteLine($"#{Name} gets {newCard.ToString()}");
+        }
+        
         public void Hit()
         {
             CurrentDealer.GiveCard(this);
         }
 
-        public void Stand()
-        {
-            State = PlayerState.Waiting;
-        }
-
-        public int GetCardsValue()
-        {
-            int value = 0;
-            foreach (var card in Cards)
-            {
-                value += card.GetValue();
-            }
-            return value;
-        }
-
         public void DoBet(int betValue)
         {
             BetValue = betValue;
-            InitialAmountOfMoney -= betValue;
+            Cash -= betValue;
         }
 
         public void GetPrize()
         {
-            InitialAmountOfMoney += BetValue * 2;
+            Cash += BetValue * 2;
         }
 
-        public void PrintInfo()
+        public void PrintCards()
         {
-            Console.WriteLine($"#{Name} - {InitialAmountOfMoney}$");
+            Console.WriteLine($"\n#{Name} cards: ");
+            foreach(var card in Cards)
+            {
+                Console.WriteLine(card.ToString());
+            }
+        }
+
+        public Card GetLastCard()
+        {
+            return Cards[Cards.Count - 1];
         }
     }
 }

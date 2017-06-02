@@ -7,10 +7,13 @@ namespace Blackjack
     {
         public List<Card> Cards { get; private set; }
         public List<Card> Deck { get; private set; }
-        private List<Player> players = new List<Player>();
-
+        public List<Player> Players { get; set; }
+        public int Total { get; set; } = 0;
+        public string Name { get; set; } = "Dealer";
         public Dealer()
         {
+            Players = new List<Player>();
+            Cards = new List<Card>();
             FillDeck();
         }
 
@@ -44,45 +47,52 @@ namespace Blackjack
 
         public void GetCard()
         {
-            int cardsValue = GetCardsValue();
-            if (cardsValue > 17) CountTheResult();
-
             Random rnd = new Random();
             int randomCardId = rnd.Next(0, Deck.Count);
             Card randomCard = Deck[randomCardId];
 
             Cards.Add(randomCard);
             Deck.RemoveAt(randomCardId);
+
+            Total += randomCard.GetValue(Total);
+            //int cardsValue = GetCardsValue();
+            //if (cardsValue > 17) CountTheResult();
         }
 
-        public void CountTheResult()
-        {
-            bool isAnyPlayerHasWon = false;
+        //public void CountTheResult()
+        //{
+        //    foreach(var player in Players)
+        //    {
+        //        int playerCardsValue = player.Total;
+        //        int dealerCardsValue = Total;
 
-            players.ForEach((player) =>
+        //        if ((playerCardsValue > dealerCardsValue && playerCardsValue <= 21) || dealerCardsValue > 21)
+        //        {
+        //            player.GetPrize();
+        //        }
+        //    }
+        //}
+
+        public void Reset()
+        {
+            this.Total = 0;
+            this.Cards.Clear();
+            this.FillDeck();
+
+            foreach(var player in Players)
             {
-                int playerCardsValue = player.GetCardsValue();
-                int dealerCardsValue = GetCardsValue();
-
-                if (playerCardsValue > dealerCardsValue)
-                {
-                    player.GetPrize();
-                    isAnyPlayerHasWon = true;
-                }
-                player.PrintInfo();
-            });
-
-            //...
+                player.Total = 0;
+                player.Cards.Clear();
+            }
         }
 
-        public int GetCardsValue()
+        public void PrintCards()
         {
-            int value = 0;
+            Console.WriteLine($"\n#{Name} cards: ");
             foreach (var card in Cards)
             {
-                value += card.GetValue();
+                Console.WriteLine(card.ToString());
             }
-            return value;
         }
     }
 }

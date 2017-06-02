@@ -58,7 +58,7 @@ namespace Blackjack
             return randomCard;
         }
 
-        public int GetValue()
+        public int GetValue(int total)
         {
             int value = 0;
             switch (Name)
@@ -77,7 +77,10 @@ namespace Blackjack
                 case CardsNames.Queen:
                 case CardsNames.King: value = 10; break;
 
-                case CardsNames.Ace: value = 11; break;
+                case CardsNames.Ace:
+                    if (total + 11 > 21) value = 1;
+                    else value = 11;
+                    break;
             }
             return value;
         }
