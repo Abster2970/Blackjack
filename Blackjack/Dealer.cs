@@ -5,67 +5,62 @@ namespace Blackjack
 {
     class Dealer : Participant
     {
-        public List<Card> Deck { get; private set; }
-        public List<Player> Players { get; set; }
+        public Deck Deck { get; private set; }
 
-        public Dealer(string name)
-             : base(name)
+        public Dealer()
         {
-            Players = new List<Player>();
-            FillDeck();
-        }
-
-        private void FillDeck()
-        {
-            Deck = new List<Card>();
-
-            string[] suitsNames = Enum.GetNames(typeof(CardsSuits));
-            string[] valuesNames = Enum.GetNames(typeof(CardsNames));
-
-            foreach (string suitName in suitsNames)
-            {
-                CardsSuits currSuit = (CardsSuits)Enum.Parse(typeof(CardsSuits), suitName);
-                foreach (string valueName in valuesNames)
-                {
-                    CardsNames currValue = (CardsNames)Enum.Parse(typeof(CardsNames), valueName);
-                    Deck.Add(new Card(currSuit, currValue));
-                }
-            }
+            Deck = new Deck();
+            Hand = new Hand(isDealer: true);
         }
         
-        public void GiveCard(Player player)
+        public void GiveCard(Hand hand)
         {
-            Random rnd = new Random();
-            int randomCardId = rnd.Next(0, Deck.Count);
-            Card randomCard = Deck[randomCardId];
-
-            player.AddCard(randomCard);
-            Deck.RemoveAt(randomCardId);
+            var card = Deck.GetCard();
+            hand.AddCard(card);
         }
 
-        public void GetCard()
+        public void Deal(Hand hand)
         {
-            Random rnd = new Random();
-            int randomCardId = rnd.Next(0, Deck.Count);
-            Card randomCard = Deck[randomCardId];
+            var firstCard = Deck.GetCard();
+            hand.AddCard(firstCard);
 
-            Cards.Add(randomCard);
-            Deck.RemoveAt(randomCardId);
+            var secondcard = Deck.GetCard();
 
-            Total += randomCard.GetValue(Total);
-        }
-
-        public void Reset()
-        {
-            this.Total = 0;
-            this.Cards.Clear();
-            this.FillDeck();
-
-            foreach(var player in Players)
+            if (hand.IsDealer)
             {
-                player.Total = 0;
-                player.Cards.Clear();
+                secondcard.Flip();
             }
+
+            hand.AddCard(secondcard);
         }
+
+        public void PrepareDeckToTheNewGame()
+        {
+            Deck.Fill();
+            Deck.Shuffle();
+        }
+
+        public void GivePrize(Player player)
+        {
+            player.Cash += player.BetValue * 2;
+        }
+
+        public void ReturnMoney(Player player)
+        {
+            player.Cash += player.BetValue;
+        }
+
+        //public void Reset()
+        //{
+        //    this.Total = 0;
+        //    this.Cards.Clear();
+        //    this.FillDeck();
+
+        //    foreach(var player in Players)
+        //    {
+        //        player.Total = 0;
+        //        player.Cards.Clear();
+        //    }
+        //}
     }
 }

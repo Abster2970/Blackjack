@@ -2,89 +2,110 @@
 using System.Collections.Generic;
 
 namespace Blackjack
-{
+{   
     class Program
     {
         static void Main(string[] args)
         {
-            Participant dealer = new Dealer("Dealer");
-            List<Participant> players = new List<Participant>(){
-                { new Player("1", dealer as Dealer) },
-                { new Player("2", dealer as Dealer) },
-                { new Player("3", dealer as Dealer) }
-            };
+            Dealer dealer = new Dealer();
+            Player player = new Player("Bob", dealer);
+            player.Cash = 1000;
 
             for (;;)
             {
+                dealer.Hand.Clear();
+                player.Hand.Clear();
+                dealer.PrepareDeckToTheNewGame();
+
                 Console.WriteLine("=================================================");
-                (dealer as Dealer).GetCard();
-                (dealer as Dealer).GetCard();
+                dealer.Deal(dealer.Hand);
+                dealer.Deal(player.Hand);
 
-                Console.WriteLine($"Visible dealer's card: {dealer.Cards[0].ToString()}");
-                foreach (var player in players)
-                {
-                    int initialCash = (player as Player).Cash;
+                PrintDealerCards(dealer);
 
-                    Console.WriteLine();
-                    Console.WriteLine($"#{player.Name} - Cash:{(player as Player).Cash}");
-                    Console.WriteLine($"#{player.Name} Type a bet you wish: ");
+                int initialCash = player.Cash;
 
-                    int betValue = int.Parse(Console.ReadLine());
-                    (player as Player).DoBet(betValue);
+                Console.WriteLine();
+                Console.WriteLine($"#{player.Name}'s cash: {player.Cash}");
+                Console.WriteLine($"#{player.Name}, type a bet you wish: ");
 
-                    (player as Player).Hit();
-                    (player as Player).Hit();
-                    player.PrintCards();
+                int betValue = int.Parse(Console.ReadLine());
+                player.BetValue = betValue;
 
-                    Console.WriteLine();
-                    Console.WriteLine($"#{player.Name} - Cash:{(player as Player).Cash}");
-                    char action;
-                    do
-                    {
-                        Console.WriteLine($"#{player.Name} - Total:{player.Total}");
-                        Console.WriteLine("What do you want to do? (h/s)");
+                Console.WriteLine();
+                PrintPlayerCards(player);
 
-                        action = Console.ReadLine()[0];
-
-                        Console.WriteLine();
-                        if (action == 'h')
-                        {
-                            (player as Player).Hit();
-                            Console.WriteLine($"#{player.Name} gets {(player as Player).GetLastCard().ToString()}");
-                        }
-                    } while (action == 'h' && player.Total <= 21);
-
-                    Console.WriteLine($"#{player.Name} - Total:{player.Total}");
-                    Console.WriteLine("--------------------------");
-                }
-                
-
-                while (dealer.Total <= 17)
-                {
-                    (dealer as Dealer).GetCard();
-                }
-
-                dealer.PrintCards();
-                Console.WriteLine($"Dealer's total: {dealer.Total}");
                 Console.WriteLine();
 
-                foreach(var player in players)
+                string action;
+                do
                 {
-                    Console.WriteLine();
-                    if ((player.Total <= 21 && player.Total > dealer.Total) || (dealer.Total > 21 && player.Total <= 21))
-                    {
-                        (player as Player).GetPrize();
-                        Console.WriteLine($"#{player.Name} - WON");
-                    }
-                    else
-                    {
-                        Console.WriteLine($"#{player.Name} - LOST");
-                    }
+                    Console.WriteLine("What do you want to do? (h/s)");
+                    action = Console.ReadLine();
 
-                    Console.WriteLine($"#{player.Name} - Total:{player.Total}");
-                    Console.WriteLine($"#{player.Name} - Cash:{(player as Player).Cash}");
+                    switch (action)
+                    {
+                        case "h":
+                            player.Hit();
+                            break;
+                        case "s":
+                            break;
+                        default:
+                            Console.WriteLine("Invalid action, try again. ");
+                            break;
+                    }
+                    Console.WriteLine();
+
+                    PrintPlayerCards(player);
+                } while (action != "s" && player.Hand.TotalValue <= 21);
+
+                Console.WriteLine();
+                Console.WriteLine("--------------------------");
+
+                while (dealer.Hand.TotalValue <= 17)
+                {
+                    dealer.GiveCard(dealer.Hand);
                 }
-                (dealer as Dealer).Reset();
+
+                dealer.Hand.Show();
+                PrintDealerCards(dealer);
+                Console.WriteLine();
+
+                var totalPlayerValue = player.Hand.TotalValue;
+                var totalDealerValue = dealer.Hand.TotalValue;
+
+                if (totalPlayerValue == totalDealerValue)
+                {
+                    Console.WriteLine("***DRAW***");
+                    dealer.ReturnMoney(player);
+                }
+                else if ((totalPlayerValue <= 21 && totalPlayerValue > totalDealerValue) || (totalDealerValue > 21 && totalPlayerValue <= 21))
+                {
+                    dealer.GivePrize(player);
+                    Console.WriteLine($"#{player.Name} - WON");
+                }
+                else
+                {
+                    Console.WriteLine($"#{player.Name} - LOST");
+                }
+            }
+        }   
+
+        static void PrintPlayerCards(Player player)
+        {
+            Console.WriteLine($"#{player.Name}'s cards: <{player.Hand.TotalValue}>");
+            foreach(var card in player.Hand.Cards)
+            {
+                Console.WriteLine(card.ToString());
+            }
+        }
+
+        static void PrintDealerCards(Dealer dealer)
+        {
+            Console.WriteLine($"Dealer's cards: <{dealer.Hand.FaceValue}>");
+            foreach (var card in dealer.Hand.Cards)
+            {
+                Console.WriteLine(card.IsFaceUp ? card.ToString() : "XXX");
             }
         }
     }

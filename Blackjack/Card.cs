@@ -2,92 +2,51 @@
 
 namespace Blackjack
 {
-    enum CardsSuits
+    enum Suits
     {
-        Spades,
-        Clubs,
-        Hearts,
-        Diamonds
+        Spades = 1,
+        Clubs = 2,
+        Hearts = 3,
+        Diamonds = 4
     }
 
-    enum CardsNames
+    enum Ranks
     {
-        Two,
-        Three,
-        Four,
-        Five,
-        Six, 
-        Seven,
-        Eight,
-        Nine,
-        Ten,
-        Jack,
-        Queen,
-        King,
-        Ace
+        Ace = 1,
+        Two = 2,
+        Three = 3,
+        Four = 4,
+        Five = 5,
+        Six = 6, 
+        Seven = 7,
+        Eight = 8,
+        Nine = 9,
+        Ten = 10,
+        Jack = 11,
+        Queen = 12,
+        King = 13
     }
 
     class Card
     {
-        public CardsSuits Suit { get; set; }
-        public CardsNames Name { get; set; }
-        static Random rnd = new Random();
-
-        public Card (CardsSuits suit, CardsNames name)
+        public Suits Suit { get; set; }
+        public Ranks Rank { get; set; }
+        public bool IsFaceUp { get; private set; }
+        
+        public Card (Suits suit, Ranks rank)
         {
             Suit = suit;
-            Name = name;
+            Rank = rank;
         }
 
-        public static Card GetRandomCard()
+        public void Flip()
         {
-            int cardsSuitsCount = Enum.GetValues(typeof(CardsSuits)).Length;
-            int cardsValuesCount = Enum.GetValues(typeof(CardsNames)).Length;
-
-            int randomSuitId = rnd.Next(0, cardsSuitsCount - 1);
-            int randomValueId = rnd.Next(0, cardsValuesCount - 1);
-
-            string randomSuitName = Enum.GetNames(typeof(CardsSuits))[randomSuitId];
-            string randomValueName = Enum.GetNames(typeof(CardsNames))[randomValueId];
-
-            CardsSuits randomSuit = (CardsSuits)Enum.Parse(typeof(CardsSuits), randomSuitName);
-            CardsNames randomValue = (CardsNames)Enum.Parse(typeof(CardsNames), randomValueName);
-
-            Card randomCard = new Card(randomSuit, randomValue);
-
-            return randomCard;
-        }
-
-        public int GetValue(int total)
-        {
-            int value = 0;
-            switch (Name)
-            {
-                case CardsNames.Two: value = 2; break;
-                case CardsNames.Three: value = 3; break;
-                case CardsNames.Four: value = 4; break;
-                case CardsNames.Five: value = 5; break;
-                case CardsNames.Six: value = 6; break;
-                case CardsNames.Seven: value = 7; break;
-                case CardsNames.Eight: value = 8; break;
-                case CardsNames.Nine: value = 9; break;
-
-                case CardsNames.Ten:
-                case CardsNames.Jack:
-                case CardsNames.Queen:
-                case CardsNames.King: value = 10; break;
-
-                case CardsNames.Ace:
-                    if (total + 11 > 21) value = 1;
-                    else value = 11;
-                    break;
-            }
-            return value;
+            IsFaceUp = !IsFaceUp;
         }
 
         public override string ToString()
         {
-            return String.Format($"{Name.ToString()} of {Suit.ToString()}");
+            return String.Format($"{Rank.ToString()} of {Suit.ToString()}");
         }
     }
 }
