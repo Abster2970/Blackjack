@@ -35,11 +35,11 @@ namespace Blackjack
                 Console.WriteLine();
                 PrintPlayerCards(player);
 
-                Console.WriteLine();
 
                 string action;
                 do
                 {
+                    Console.WriteLine();
                     Console.WriteLine("What do you want to do? (h/s)");
                     action = Console.ReadLine();
 
@@ -60,7 +60,6 @@ namespace Blackjack
                 } while (action != "s" && player.Hand.TotalValue <= 21);
 
                 Console.WriteLine();
-                Console.WriteLine("--------------------------");
 
                 while (dealer.Hand.TotalValue <= 17)
                 {

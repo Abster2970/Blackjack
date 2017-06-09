@@ -12,14 +12,5 @@ namespace Blackjack
         public Participant()
         {
         }
-
-        //public void PrintCards()
-        //{
-        //    Console.WriteLine($"\n#{Name} cards: ");
-        //    foreach (var card in Cards)
-        //    {
-        //        Console.WriteLine(card.ToString());
-        //    }
-        //}
     }
 }

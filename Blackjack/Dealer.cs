@@ -49,18 +49,5 @@ namespace Blackjack
         {
             player.Cash += player.BetValue;
         }
-
-        //public void Reset()
-        //{
-        //    this.Total = 0;
-        //    this.Cards.Clear();
-        //    this.FillDeck();
-
-        //    foreach(var player in Players)
-        //    {
-        //        player.Total = 0;
-        //        player.Cards.Clear();
-        //    }
-        //}
     }
 }
