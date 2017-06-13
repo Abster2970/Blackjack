@@ -5,6 +5,7 @@ namespace Blackjack
 {   
     class Program
     {
+
         static void Main(string[] args)
         {
             Dealer dealer = new Dealer();
@@ -85,8 +86,8 @@ namespace Blackjack
 
                 if (player.Cash == 0)
                 {
+                    Console.WriteLine();
                     Console.WriteLine("GAME OVER");
-                    return;
                 }
 
                 Console.WriteLine("Press ENTER to continue or any other key to exit.");
@@ -96,6 +97,10 @@ namespace Blackjack
                 switch (afterGameAction)
                 {
                     case ConsoleKey.Enter:
+                        if (player.Cash == 0)
+                        {
+                            dealer.GiveExtraCash(player, 1000);
+                        }
                         Console.Clear();
                         break;
                     default:

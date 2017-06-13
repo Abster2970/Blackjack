@@ -8,11 +8,6 @@ namespace Blackjack
     {
         private readonly List<Card> cards = new List<Card>(52);
 
-        public IReadOnlyCollection<Card> Cards
-        {
-            get { return cards.AsReadOnly(); }
-        }
-
         public Deck()
         {
             this.Fill();
@@ -47,7 +42,7 @@ namespace Blackjack
         
         public Card GetCard()
         {
-            if (Cards.Count == 0) return null;
+            if (cards.Count == 0) return null;
             
             var card = cards.First();
             cards.Remove(card);

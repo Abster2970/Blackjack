@@ -39,7 +39,7 @@ namespace Blackjack
             }
             set
             {
-                betValue = value > 0 ? value : 0;
+                betValue = value > Cash ? Cash : value > 0 ? value : 0;
                 Cash -= betValue;
             }
         }
