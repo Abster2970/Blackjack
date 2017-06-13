@@ -8,22 +8,18 @@ namespace Blackjack
         static void Main(string[] args)
         {
             Dealer dealer = new Dealer();
-            Player player = new Player("Bob", dealer);
-            player.Cash = 1000;
+            Player player = new Player("Bob", dealer, 1000);
 
             for (;;)
             {
                 dealer.Hand.Clear();
                 player.Hand.Clear();
-                dealer.PrepareDeckToTheNewGame();
 
-                Console.WriteLine("=================================================");
+                dealer.PrepareDeckToTheNewGame();
                 dealer.Deal(dealer.Hand);
                 dealer.Deal(player.Hand);
 
                 PrintDealerCards(dealer);
-
-                int initialCash = player.Cash;
 
                 Console.WriteLine();
                 Console.WriteLine($"#{player.Name}'s cash: {player.Cash}");
@@ -34,8 +30,7 @@ namespace Blackjack
 
                 Console.WriteLine();
                 PrintPlayerCards(player);
-
-
+                
                 string action;
                 do
                 {
@@ -65,15 +60,15 @@ namespace Blackjack
                 {
                     dealer.GiveCard(dealer.Hand);
                 }
-
                 dealer.Hand.Show();
+
                 PrintDealerCards(dealer);
                 Console.WriteLine();
 
                 var totalPlayerValue = player.Hand.TotalValue;
                 var totalDealerValue = dealer.Hand.TotalValue;
 
-                if (totalPlayerValue == totalDealerValue)
+                if (totalPlayerValue == totalDealerValue && totalPlayerValue <= 21)
                 {
                     Console.WriteLine("***DRAW***");
                     dealer.ReturnMoney(player);
@@ -86,6 +81,25 @@ namespace Blackjack
                 else
                 {
                     Console.WriteLine($"#{player.Name} - LOST");
+                }
+
+                if (player.Cash == 0)
+                {
+                    Console.WriteLine("GAME OVER");
+                    return;
+                }
+
+                Console.WriteLine("Press ENTER to continue or any other key to exit.");
+                ConsoleKeyInfo key = Console.ReadKey();
+                ConsoleKey afterGameAction = key.Key; 
+
+                switch (afterGameAction)
+                {
+                    case ConsoleKey.Enter:
+                        Console.Clear();
+                        break;
+                    default:
+                        return;
                 }
             }
         }   

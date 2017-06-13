@@ -11,11 +11,12 @@ namespace Blackjack
         
         public Dealer Dealer { get; private set; }
 
-        public Player(string name, Dealer dealer)
+        public Player(string name, Dealer dealer, int cash)
         {
             Hand = new Hand(isDealer: false);
             Name = name;
             Dealer = dealer;
+            Cash = cash;
         }
 
         public int Cash

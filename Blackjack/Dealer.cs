@@ -49,5 +49,10 @@ namespace Blackjack
         {
             player.Cash += player.BetValue;
         }
+
+        public void GiveExtraCash(Player player, int cash)
+        {
+            player.Cash += cash;
+        }
     }
 }
