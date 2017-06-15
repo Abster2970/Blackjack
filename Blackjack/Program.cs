@@ -14,14 +14,12 @@ namespace Blackjack
             for (;;)
             {
                 dealer.Hand.Clear();
-                player.Hand.Clear();
-
                 dealer.PrepareDeckToTheNewGame();
                 dealer.Deal(dealer.Hand);
+
+                player.Hand.Clear();
                 dealer.Deal(player.Hand);
-
-                PrintDealerCards(dealer);
-
+                
                 Console.WriteLine();
                 Console.WriteLine($"#{player.Name}'s cash: {player.Cash}");
                 Console.WriteLine($"#{player.Name}, type a bet you wish: ");
@@ -30,6 +28,8 @@ namespace Blackjack
                 player.BetValue = betValue;
 
                 Console.WriteLine();
+                PrintDealerCards(dealer);
+                Console.WriteLine();
                 PrintPlayerCards(player);
                 
                 string action;
@@ -37,8 +37,8 @@ namespace Blackjack
                 {
                     Console.WriteLine();
                     Console.WriteLine("What do you want to do? (h/s)");
-                    action = Console.ReadLine();
 
+                    action = Console.ReadLine();
                     switch (action)
                     {
                         case "h":
@@ -56,7 +56,6 @@ namespace Blackjack
                 } while (action != "s" && player.Hand.TotalValue <= 21);
 
                 Console.WriteLine();
-
                 while (dealer.Hand.TotalValue <= 17)
                 {
                     dealer.GiveCard(dealer.Hand);
@@ -87,7 +86,7 @@ namespace Blackjack
                 if (player.Cash == 0)
                 {
                     Console.WriteLine();
-                    Console.WriteLine("GAME OVER");
+                    Console.WriteLine($"#{player.Name} - GAME OVER");
                 }
 
                 Console.WriteLine("Press ENTER to continue or any other key to exit.");
