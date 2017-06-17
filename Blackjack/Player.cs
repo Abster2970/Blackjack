@@ -11,10 +11,10 @@ namespace Blackjack
         
         public Dealer Dealer { get; private set; }
 
-        public Player(string name, Dealer dealer, int cash)
+        public Player(int id, Dealer dealer, int cash)
         {
             Hand = new Hand(isDealer: false);
-            Name = name;
+            ID = id;
             Dealer = dealer;
             Cash = cash;
         }
@@ -42,11 +42,6 @@ namespace Blackjack
                 betValue = value > Cash ? Cash : value > 0 ? value : 0;
                 Cash -= betValue;
             }
-        }
-
-        public void Hit()
-        {
-            Dealer.GiveCard(Hand);
         }
     }
 }

@@ -6,7 +6,7 @@ namespace Blackjack
 {
     abstract class Participant
     {
-        public string Name { get; set; }
+        public int ID { get; set; }
         public Hand Hand { get; protected set; }
 
         public Participant()

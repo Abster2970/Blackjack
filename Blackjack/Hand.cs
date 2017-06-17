@@ -7,29 +7,21 @@ namespace Blackjack
 {
     class Hand
     {
-        private readonly List<Card> cards = new List<Card>();
+        public List<Card> Cards { get; set; } = new List<Card>();
 
         public bool IsDealer { get; private set; }
-
-        public IReadOnlyCollection<Card> Cards
+        
+        public Hand(bool isDealer)
         {
-            get { return cards.AsReadOnly(); }
-        }
-
-        public int SoftValue
-        {
-            get
-            {
-                return cards.Select(c => (int)c.Rank > 1 && (int)c.Rank < 11 ? (int)c.Rank : (int)c.Rank == 1 ? 11 : 10).Sum();
-            }
+            IsDealer = isDealer;
         }
 
         public int TotalValue
         {
             get
             {
-                var totalValue = SoftValue;
-                var aces = cards.Count(c => c.Rank == Ranks.Ace);
+                var totalValue = Cards.Select(c => (int)c.Rank > 1 && (int)c.Rank < 11 ? (int)c.Rank : (int)c.Rank == 1 ? 11 : 10).Sum();
+                var aces = Cards.Count(c => c.Rank == Ranks.Ace);
 
                 while (aces-- > 0 && totalValue > 21)
                 {
@@ -39,14 +31,14 @@ namespace Blackjack
                 return totalValue;
             }
         }
-        
+
         public int FaceValue
         {
             get
             {
-                var totalValue = cards.Where(c => c.IsFaceUp)
-                    .Select(c => (int)c.Rank > 1 && (int)c.Rank < 11 ? (int)c.Rank : (int)c.Rank == 1 ? 11 : 10).Sum();
-                var aces = cards.Count(c => c.Rank == Ranks.Ace);
+                var totalValue = Cards.Where(c => c.IsFaceUp)
+                       .Select(c => (int)c.Rank > 1 && (int)c.Rank < 11 ? (int)c.Rank : (int)c.Rank == 1 ? 11 : 10).Sum();
+                var aces = Cards.Count(c => c.Rank == Ranks.Ace);
 
                 while (aces-- > 0 && totalValue > 21)
                 {
@@ -55,40 +47,6 @@ namespace Blackjack
 
                 return totalValue;
             }
-        }
-
-        public List<Card> VisibleCards
-        {
-            get
-            {
-                return Cards.Where(c => c.IsFaceUp).ToList();
-            }
-        }
-
-        public Hand(bool isDealer)
-        {
-            IsDealer = isDealer;
-        }
-
-        public void AddCard(Card card)
-        {
-            cards.Add(card);
-        }
-
-        public void Show()
-        {
-            foreach(var card in cards)
-            {
-                if (!card.IsFaceUp)
-                {
-                    card.Flip();
-                }
-            }
-        }
-
-        public void Clear()
-        {
-            cards.Clear();
         }
     }
 }
