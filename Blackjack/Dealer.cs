@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Blackjack
+﻿namespace Blackjack
 {
     class Dealer : Participant
     {
