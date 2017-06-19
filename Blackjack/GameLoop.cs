@@ -1,23 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Blackjack
+﻿namespace Blackjack
 {
     class GameLoop
     {
-        Game game = new Game(5);
+        Game game;
 
         public void Start()
         {
+            int numberOfPlayers = ConsoleHelper.AskForNumberOfPlayers();
+            game = new Game(numberOfPlayers);
+
             for (;;)
-            { 
+            {
+                #region Preparing to the new game
                 game.ClearAllHands();
-                game.PrepareDeckToTheNewGame();
+                game.PrepareDeckToNewGame();
                 game.GiveInitialCardsToEverybody();
+                #endregion
 
                 ConsoleHelper.PrintDealerCards(game.Dealer);
 
+                #region General part of the game - players get cards until their hands are full or they considered to stop
                 foreach (Player player in game.Players)
                 {
                     ConsoleHelper.AskPlayerForBet(player);
@@ -26,7 +28,7 @@ namespace Blackjack
                     string action = "";
                     while (action != "s" && player.Hand.TotalValue <= 21)
                     {
-                        action = ConsoleHelper.AskPlayerForTheNextAction(player);
+                        action = ConsoleHelper.AskPlayerForNextAction(player);
                         if (action == "h")
                         {
                             game.Hit(player);
@@ -35,25 +37,32 @@ namespace Blackjack
                         {
                             break;
                         }
-
+                        
                         ConsoleHelper.PrintPlayerCards(player);
                     }
                 }
+                #endregion
 
+                #region Giving cards to the dealer and printing them
                 game.GiveCardsToDealerUntilFull();
                 game.ShowHand(game.Dealer.Hand);
                 ConsoleHelper.PrintDealerCards(game.Dealer);
+                #endregion
 
-                game.CountTheGameResults();
-                ConsoleHelper.PrintTheGameResults(game);
+                #region Counting and printing the game results
+                game.CountGameResults();
+                ConsoleHelper.PrintGameResults(game);
+                #endregion
 
-                bool wantToContinueTheGame = ConsoleHelper.AskForContinueTheGame();
-                if (wantToContinueTheGame)
+                #region Asking user if he wants to continue the game or not
+                bool wantToContinueGame = ConsoleHelper.AskForContinueGame();
+                if (wantToContinueGame)
                 {
-                    ConsoleHelper.ClearTheConsole();
+                    ConsoleHelper.ClearConsole();
                     continue;
                 }
                 break;
+                #endregion
             }
         }
     }

@@ -50,7 +50,7 @@ namespace Blackjack
             player.BetValue = betValue;
         }
 
-        public static string AskPlayerForTheNextAction(Player player)
+        public static string AskPlayerForNextAction(Player player)
         {
             Console.WriteLine();
             Console.WriteLine("What do you want to do? (h/s)");
@@ -59,7 +59,7 @@ namespace Blackjack
             return action;
         }
 
-        public static void PrintTheGameResults(Game game)
+        public static void PrintGameResults(Game game)
         {
             Console.WriteLine();
             foreach (Player player in game.Players)
@@ -79,14 +79,10 @@ namespace Blackjack
                 {
                     Console.WriteLine($"#{player.ID} - LOST");
                 }
-                if (player.Cash == 0)
-                {
-                    Console.WriteLine($"#{player.ID} - GAME OVER");
-                }
             }
         }
 
-        public static bool AskForContinueTheGame()
+        public static bool AskForContinueGame()
         {
             Console.WriteLine("Press ENTER to continue or any other key to exit.");
             ConsoleKeyInfo key = Console.ReadKey();
@@ -99,7 +95,14 @@ namespace Blackjack
             return false;
         }
 
-        public static void ClearTheConsole()
+        public static int AskForNumberOfPlayers()
+        {
+            Console.Write("Type the number of players: ");
+            int numberOfPlayers = int.Parse(Console.ReadLine());
+            return numberOfPlayers;
+        }
+
+        public static void ClearConsole()
         {
             Console.Clear();
         }

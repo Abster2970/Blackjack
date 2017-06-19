@@ -48,23 +48,23 @@ namespace Blackjack
         private void Deal(Hand hand)
         {
             var firstCard = GetCardFromDeck();
-            AddCardToTheHand(hand, firstCard);
+            AddCardToHand(hand, firstCard);
 
             var secondcard = GetCardFromDeck();
             if (hand.IsDealer)
             {
                 FlipCard(secondcard);
             }
-            AddCardToTheHand(hand, secondcard);
+            AddCardToHand(hand, secondcard);
         }
 
         public void GiveCard(Hand hand)
         {
             var card = GetCardFromDeck();
-            AddCardToTheHand(hand, card);
+            AddCardToHand(hand, card);
         }
 
-        public void AddCardToTheHand(Hand hand, Card card)
+        public void AddCardToHand(Hand hand, Card card)
         {
             hand.Cards.Add(card);
         }
@@ -111,7 +111,7 @@ namespace Blackjack
             }
         }
 
-        public void PrepareDeckToTheNewGame()
+        public void PrepareDeckToNewGame()
         {
             RefillDeck();
             ShuffleDeck();
@@ -173,7 +173,7 @@ namespace Blackjack
         #endregion
 
         #region GameResults
-        public void CountTheGameResults()
+        public void CountGameResults()
         {
             foreach (Player player in Players)
             {
@@ -190,7 +190,7 @@ namespace Blackjack
                 }
                 if (player.Cash == 0)
                 {
-                   GiveExtraCash(player, 1000);
+                   GiveExtraCash(player, 1);
                 }
             }
         }
