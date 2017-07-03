@@ -11,58 +11,32 @@
 
             for (;;)
             {
-                #region Preparing to the new game
+                //Preparing to the new game
                 game.ClearAllHands();
                 game.PrepareDeckToNewGame();
                 game.GiveInitialCardsToEverybody();
-                #endregion
 
                 ConsoleHelper.PrintDealerCards(game.Dealer);
 
-                #region General part of the game - players get cards until their hands are full or they considered to stop
-                foreach (Player player in game.Players)
-                {
-                    ConsoleHelper.AskPlayerForBet(player);
-                    ConsoleHelper.PrintPlayerCards(player);
+                //Main part of the game - players receive cards until their hands are full or they stop
+                game.AskAllPlayers(game);
 
-                    string action = "";
-                    while (action != "s" && player.Hand.TotalValue <= 21)
-                    {
-                        action = ConsoleHelper.AskPlayerForNextAction(player);
-                        if (action == "h")
-                        {
-                            game.Hit(player);
-                        }
-                        if (action == "s")
-                        {
-                            break;
-                        }
-                        
-                        ConsoleHelper.PrintPlayerCards(player);
-                    }
-                }
-                #endregion
-
-                #region Giving cards to the dealer and printing them
+                //Giving cards to the dealer and printing them
                 game.GiveCardsToDealerUntilFull();
                 game.ShowHand(game.Dealer.Hand);
                 ConsoleHelper.PrintDealerCards(game.Dealer);
-                #endregion
-
-                #region Counting and printing the game results
+                
+                //Counting and printing the game results
                 game.CountGameResults();
                 ConsoleHelper.PrintGameResults(game);
-                #endregion
 
-                #region Asking user if he wants to continue the game or not
+                //Asking user if he wants to continue the game or not
                 bool wantToContinueGame = ConsoleHelper.AskForContinueGame();
-                if (wantToContinueGame)
+                if (!wantToContinueGame)
                 {
-                    ConsoleHelper.ClearConsole();
-                    continue;
+                    return;
                 }
-                break;
-                #endregion
+                ConsoleHelper.ClearConsole();
             }
         }
     }

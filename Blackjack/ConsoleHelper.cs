@@ -14,7 +14,7 @@ namespace Blackjack
         public static void PrintPlayerCards(Player player)
         {
             Console.WriteLine();
-            Console.WriteLine($"#Player's N{player.ID} cards: <{player.Hand.TotalValue}>");
+            Console.WriteLine($"#Player's N{player.ID} cards: <{Game.GetTotalHandValue(player.Hand)}>");
             foreach (var card in player.Hand.Cards)
             {
                 PrintCard(card);
@@ -24,7 +24,7 @@ namespace Blackjack
         public static void PrintDealerCards(Dealer dealer)
         {
             Console.WriteLine();
-            Console.WriteLine($"Dealer's cards: <{dealer.Hand.FaceValue}>");
+            Console.WriteLine($"Dealer's cards: <{Game.GetFaceHandValue(dealer.Hand)}>");
             foreach (var card in dealer.Hand.Cards)
             {
                 if (card.IsFaceUp)
@@ -45,7 +45,7 @@ namespace Blackjack
             Console.WriteLine($"#Player N{player.ID}, type a bet you wish: ");
 
             int betValue = int.Parse(Console.ReadLine());
-            player.BetValue = betValue;
+            Game.DoBet(player, betValue);
         }
 
         public static string AskPlayerForNextAction(Player player)
@@ -62,21 +62,19 @@ namespace Blackjack
             Console.WriteLine();
             foreach (Player player in game.Players)
             {
-                var totalPlayerValue = player.Hand.TotalValue;
-                var totalDealerValue = game.Dealer.Hand.TotalValue;
+                var totalPlayerValue = Game.GetTotalHandValue(player.Hand);
+                var totalDealerValue = Game.GetTotalHandValue(game.Dealer.Hand);
 
+                string result = $"#{player.ID} - LOST";
                 if (totalPlayerValue == totalDealerValue && totalPlayerValue <= 21)
                 {
-                    Console.WriteLine($"#{player.ID} - DRAW");
+                    result = $"#{player.ID} - DRAW";
                 }
-                else if ((totalPlayerValue <= 21 && totalPlayerValue > totalDealerValue) || (totalDealerValue > 21 && totalPlayerValue <= 21))
+                if ((totalPlayerValue <= 21 && totalPlayerValue > totalDealerValue) || (totalDealerValue > 21 && totalPlayerValue <= 21))
                 {
-                    Console.WriteLine($"#{player.ID} - WON");
+                    result = $"#{player.ID} - WON";
                 }
-                else
-                {
-                    Console.WriteLine($"#{player.ID} - LOST");
-                }
+                Console.WriteLine(result);
             }
         }
 

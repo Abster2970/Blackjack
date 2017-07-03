@@ -8,11 +8,10 @@ namespace Blackjack
     {
         public Deck Deck { get; private set; } = new Deck();
         public Dealer Dealer { get; private set; } = new Dealer();
-        public List<Player> Players { get; private set; }
+        public List<Player> Players { get; private set; } = new List<Player>();
 
         public Game(int playersCount)
         {
-            Players = new List<Player>();
             InitPlayers(playersCount);
         }
 
@@ -27,10 +26,34 @@ namespace Blackjack
         }
         #endregion
         
-        #region PlayersActions
+        #region PlayersManipulations
         public void Hit(Player player)
         {
             GiveCard(player.Hand);
+        }
+        
+        public void AskAllPlayers(Game game)
+        {
+            foreach (Player player in game.Players)
+            {
+                ConsoleHelper.AskPlayerForBet(player);
+                ConsoleHelper.PrintPlayerCards(player);
+
+                string action = "";
+                while (action != "s" && Game.GetTotalHandValue(player.Hand) <= 21)
+                {
+                    action = ConsoleHelper.AskPlayerForNextAction(player);
+                    if (action == "h")
+                    {
+                        game.Hit(player);
+                    }
+                    if (action == "s")
+                    {
+                        break;
+                    }
+                    ConsoleHelper.PrintPlayerCards(player);
+                }
+            }
         }
         #endregion  
 
@@ -75,7 +98,7 @@ namespace Blackjack
 
         public void GiveCardsToDealerUntilFull()
         {
-            while (Dealer.Hand.TotalValue <= 17)
+            while (GetTotalHandValue(Dealer.Hand) <= 17)
             {
                 GiveCard(Dealer.Hand);
             }
@@ -152,9 +175,55 @@ namespace Blackjack
                 ClearHand(player.Hand);
             }
         }
+        
+        public static int GetTotalHandValue(Hand hand)
+        {
+            var totalValue = hand.Cards.Select(c => (int)c.Rank > 1 && (int)c.Rank < 11 ? (int)c.Rank : (int)c.Rank == 1 ? 11 : 10).Sum();
+            var aces = hand.Cards.Count(c => c.Rank == Ranks.Ace);
+
+            while (aces-- > 0 && totalValue > 21)
+            {
+                totalValue -= 10;
+            }
+
+            return totalValue;
+        }
+        
+        public static int GetFaceHandValue(Hand hand)
+        {
+            var totalValue = hand.Cards.Where(c => c.IsFaceUp)
+                   .Select(c => (int)c.Rank > 1 && (int)c.Rank < 11 ? (int)c.Rank : (int)c.Rank == 1 ? 11 : 10).Sum();
+            var aces = hand.Cards.Count(c => c.Rank == Ranks.Ace);
+
+            while (aces-- > 0 && totalValue > 21)
+            {
+                totalValue -= 10;
+            }
+
+            return totalValue;
+        }
         #endregion
 
         #region CashManipulations
+        
+        public static void DoBet(Player player, int betValue)
+        {
+            if (betValue < 0)
+            {
+                betValue = 0;
+            }
+            if (player.Cash < betValue)
+            {
+                player.BetValue = player.Cash;
+                player.Cash = 0;
+            }
+            if (player.Cash >= betValue)
+            {
+                player.BetValue = betValue;
+                player.Cash -= betValue;
+            }
+        }
+
         public void GivePrize(Player player)
         {
             player.Cash += player.BetValue * 2;
@@ -176,8 +245,8 @@ namespace Blackjack
         {
             foreach (Player player in Players)
             {
-                var totalPlayerValue = player.Hand.TotalValue;
-                var totalDealerValue = Dealer.Hand.TotalValue;
+                var totalPlayerValue = GetTotalHandValue(player.Hand);
+                var totalDealerValue = GetTotalHandValue(Dealer.Hand);
 
                 if (totalPlayerValue == totalDealerValue && totalPlayerValue <= 21)
                 {
